@@ -25,7 +25,6 @@
   --star-on: #d69b00;
   --star-off: #c9c9c9;
   --difficulty-bg: #e7e7e7;
-  --difficulty-fill: #d86c94;
 }
 
 body {
@@ -182,7 +181,7 @@ button:hover {
 
 table {
   width: 100%;
-  min-width: 1020px;
+  min-width: 1060px;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
@@ -237,31 +236,31 @@ th.sort-desc::after {
 }
 
 th:nth-child(1) {
-  width: 23%;
+  width: 20%;
 }
 
 th:nth-child(2) {
-  width: 12%;
+  width: 11%;
 }
 
 th:nth-child(3) {
-  width: 17%;
+  width: 18%;
 }
 
 th:nth-child(4) {
-  width: 15%;
+  width: 18%;
 }
 
 th:nth-child(5) {
-  width: 10%;
+  width: 9%;
 }
 
 th:nth-child(6) {
-  width: 15%;
+  width: 18%;
 }
 
 th:nth-child(7) {
-  width: 8%;
+  width: 6%;
 }
 
 tbody tr {
@@ -338,6 +337,13 @@ td:nth-child(5) {
   border: 1px solid var(--other-border);
 }
 
+.recommend-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
 .star-rating {
   display: inline-flex;
   align-items: center;
@@ -345,6 +351,7 @@ td:nth-child(5) {
   white-space: nowrap;
   font-size: 15px;
   letter-spacing: -0.03em;
+  min-width: 0;
 }
 
 .star-on {
@@ -355,6 +362,14 @@ td:nth-child(5) {
   color: var(--star-off);
 }
 
+.recommend-number {
+  width: 18px;
+  flex: 0 0 18px;
+  text-align: right;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
 .difficulty-cell {
   display: flex;
   align-items: center;
@@ -363,6 +378,7 @@ td:nth-child(5) {
 
 .difficulty-number {
   width: 18px;
+  flex: 0 0 18px;
   text-align: right;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
@@ -380,7 +396,7 @@ td:nth-child(5) {
 .difficulty-fill {
   height: 100%;
   border-radius: 999px;
-  background: var(--difficulty-fill);
+  transition: width 0.2s ease;
 }
 
 .url-link {
@@ -430,7 +446,7 @@ td:nth-child(5) {
   }
 
   table {
-    min-width: 980px;
+    min-width: 1040px;
     font-size: 13px;
   }
 

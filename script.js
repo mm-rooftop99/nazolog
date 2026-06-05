@@ -322,33 +322,55 @@ function createRecommendCell(value) {
   const td = document.createElement("td");
   const rating = clampNumber(toNumber(value), 0, 10);
 
+  if (!rating) {
+    td.textContent = "";
+    return td;
+  }
+
   const wrapper = document.createElement("div");
-  wrapper.className = "star-rating";
-  wrapper.setAttribute("aria-label", `おすすめ度 ${rating}`);
+  wrapper.className = "recommend-cell";
+
+  const stars = document.createElement("div");
+  stars.className = "star-rating";
+  stars.setAttribute("aria-label", `おすすめ度 ${rating}`);
 
   for (let i = 1; i <= 10; i++) {
     const star = document.createElement("span");
     star.className = i <= rating ? "star-on" : "star-off";
     star.textContent = i <= rating ? "★" : "☆";
-    wrapper.appendChild(star);
+    stars.appendChild(star);
   }
 
+  const number = document.createElement("span");
+  number.className = "recommend-number";
+  number.textContent = rating;
+
+  wrapper.appendChild(stars);
+  wrapper.appendChild(number);
   td.appendChild(wrapper);
+
   return td;
 }
 
 function createDifficultyCell(value) {
   const td = document.createElement("td");
-
   const difficulty = clampNumber(toNumber(value), 0, 10);
+
+  if (!difficulty) {
+    td.textContent = "";
+    return td;
+  }
+
   const percent = difficulty * 10;
+  const gradient = getDifficultyGradient(difficulty);
 
   const wrapper = document.createElement("div");
   wrapper.className = "difficulty-cell";
 
   const number = document.createElement("span");
   number.className = "difficulty-number";
-  number.textContent = difficulty || "";
+  number.textContent = difficulty;
+  number.style.color = gradient.textColor;
 
   const bar = document.createElement("div");
   bar.className = "difficulty-bar";
@@ -356,6 +378,7 @@ function createDifficultyCell(value) {
   const fill = document.createElement("div");
   fill.className = "difficulty-fill";
   fill.style.width = `${percent}%`;
+  fill.style.backgroundImage = gradient.background;
 
   bar.appendChild(fill);
   wrapper.appendChild(number);
@@ -363,6 +386,53 @@ function createDifficultyCell(value) {
   td.appendChild(wrapper);
 
   return td;
+}
+
+function getDifficultyGradient(difficulty) {
+  const gradients = {
+    1: {
+      background: "linear-gradient(90deg, #355cff 0%, #6aa8ff 100%)",
+      textColor: "#355cff",
+    },
+    2: {
+      background: "linear-gradient(90deg, #2c7bff 0%, #59c2ff 100%)",
+      textColor: "#2c7bff",
+    },
+    3: {
+      background: "linear-gradient(90deg, #00a2ff 0%, #34dcff 100%)",
+      textColor: "#0c97d6",
+    },
+    4: {
+      background: "linear-gradient(90deg, #00c5d8 0%, #49e8bf 100%)",
+      textColor: "#00a39f",
+    },
+    5: {
+      background: "linear-gradient(90deg, #33c96b 0%, #95d84a 100%)",
+      textColor: "#34a853",
+    },
+    6: {
+      background: "linear-gradient(90deg, #9ed93f 0%, #e5df39 100%)",
+      textColor: "#7da100",
+    },
+    7: {
+      background: "linear-gradient(90deg, #efd63a 0%, #f8b63a 100%)",
+      textColor: "#c28a00",
+    },
+    8: {
+      background: "linear-gradient(90deg, #f79d2e 0%, #f86f2e 100%)",
+      textColor: "#dc6d00",
+    },
+    9: {
+      background: "linear-gradient(90deg, #f55f2e 0%, #e9342e 100%)",
+      textColor: "#d43a1c",
+    },
+    10: {
+      background: "linear-gradient(90deg, #df1f26 0%, #a80021 100%)",
+      textColor: "#b00020",
+    },
+  };
+
+  return gradients[difficulty] || gradients[1];
 }
 
 function createClearTimeCell(value) {
