@@ -243,6 +243,7 @@ function renderTable(rows) {
 
   rows.forEach((row) => {
     const tr = document.createElement("tr");
+    tr.className = getTypeClass(row["Type"]);
 
     tr.appendChild(createTitleCell(row["タイトル"]));
     tr.appendChild(createTypeCell(row["Type"]));
@@ -256,10 +257,31 @@ function renderTable(rows) {
   });
 }
 
+function getTypeClass(type) {
+  if (type === "LINE謎") {
+    return "type-line";
+  }
+
+  if (type === "Web謎") {
+    return "type-web";
+  }
+
+  if (type === "Web謎_スマホ") {
+    return "type-web-mobile";
+  }
+
+  return "type-other";
+}
+
 function createTitleCell(value) {
   const td = document.createElement("td");
   td.className = "title-cell";
-  td.textContent = value || "";
+
+  const div = document.createElement("div");
+  div.className = "cell-inner";
+  div.textContent = value || "";
+
+  td.appendChild(div);
   return td;
 }
 
@@ -272,7 +294,7 @@ function createTypeCell(value) {
   }
 
   const span = document.createElement("span");
-  span.className = "type-badge";
+  span.className = `type-badge ${getTypeClass(value)}`;
   span.textContent = value;
   td.appendChild(span);
 
@@ -283,7 +305,7 @@ function createRatingCell(value) {
   const td = document.createElement("td");
   const span = document.createElement("span");
   span.className = "rating";
-  span.textContent = value ? `${value}/10` : "";
+  span.textContent = value || "";
   td.appendChild(span);
   return td;
 }
@@ -302,7 +324,12 @@ function createClearTimeCell(value) {
 
 function createTextCell(value) {
   const td = document.createElement("td");
-  td.textContent = value || "";
+
+  const div = document.createElement("div");
+  div.className = "cell-inner";
+  div.textContent = value || "";
+
+  td.appendChild(div);
   return td;
 }
 
