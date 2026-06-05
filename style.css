@@ -21,6 +21,11 @@
   --line-border: #8bc48a;
   --other-bg: #f4f4f4;
   --other-border: #c7c7c7;
+
+  --star-on: #d69b00;
+  --star-off: #c9c9c9;
+  --difficulty-bg: #e7e7e7;
+  --difficulty-fill: #d86c94;
 }
 
 body {
@@ -177,7 +182,7 @@ button:hover {
 
 table {
   width: 100%;
-  min-width: 960px;
+  min-width: 1020px;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
@@ -210,11 +215,6 @@ th {
   letter-spacing: 0.03em;
 }
 
-th:first-child,
-td:first-child {
-  border-left: none;
-}
-
 th:last-child,
 td:last-child {
   border-right: none;
@@ -237,28 +237,31 @@ th.sort-desc::after {
 }
 
 th:nth-child(1) {
-  width: 24%;
+  width: 23%;
 }
 
 th:nth-child(2) {
   width: 12%;
 }
 
-th:nth-child(3),
+th:nth-child(3) {
+  width: 17%;
+}
+
 th:nth-child(4) {
-  width: 10%;
+  width: 15%;
 }
 
 th:nth-child(5) {
-  width: 11%;
+  width: 10%;
 }
 
 th:nth-child(6) {
-  width: 24%;
+  width: 15%;
 }
 
 th:nth-child(7) {
-  width: 9%;
+  width: 8%;
 }
 
 tbody tr {
@@ -287,8 +290,6 @@ td {
   line-height: 1.45;
 }
 
-td:nth-child(3),
-td:nth-child(4),
 td:nth-child(5) {
   text-align: right;
   white-space: nowrap;
@@ -300,10 +301,9 @@ td:nth-child(5) {
 }
 
 .cell-inner {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  max-height: 40px;
   overflow: hidden;
+  line-height: 1.45;
 }
 
 .type-badge {
@@ -338,9 +338,49 @@ td:nth-child(5) {
   border: 1px solid var(--other-border);
 }
 
-.rating {
-  font-weight: 800;
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  white-space: nowrap;
   font-size: 15px;
+  letter-spacing: -0.03em;
+}
+
+.star-on {
+  color: var(--star-on);
+}
+
+.star-off {
+  color: var(--star-off);
+}
+
+.difficulty-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.difficulty-number {
+  width: 18px;
+  text-align: right;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.difficulty-bar {
+  position: relative;
+  flex: 1;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--difficulty-bg);
+}
+
+.difficulty-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--difficulty-fill);
 }
 
 .url-link {
@@ -390,7 +430,7 @@ td:nth-child(5) {
   }
 
   table {
-    min-width: 900px;
+    min-width: 980px;
     font-size: 13px;
   }
 
@@ -402,5 +442,13 @@ td:nth-child(5) {
   tbody tr,
   td {
     height: 60px;
+  }
+
+  .cell-inner {
+    max-height: 38px;
+  }
+
+  .star-rating {
+    font-size: 14px;
   }
 }
