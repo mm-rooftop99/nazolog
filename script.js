@@ -109,8 +109,10 @@ function parseDelimitedText(text, delimiter) {
     cell += char;
   }
 
-  row.push(cell);
-  result.push(row);
+  if (cell !== "" || row.length > 0) {
+    row.push(cell);
+    result.push(row);
+  }
 
   return result;
 }
@@ -137,11 +139,13 @@ function setupEvents() {
     searchInput.value = "";
     typeFilter.value = "";
     recommendFilter.value = "";
+
     currentSort = {
       key: "",
       direction: "asc",
       type: "text",
     };
+
     clearHeaderSortClasses();
     applyFilters();
   });
@@ -169,12 +173,12 @@ function setupEvents() {
 function applyFilters() {
   const keyword = normalizeText(searchInput.value);
   const selectedType = typeFilter.value;
-  const minimumRecommend = Number(recommendFilter.value || 0);
+  const minimumRecommend = toNumber(recommendFilter.value);
 
   filteredRows = allRows.filter((row) => {
     const matchesKeyword = keyword === "" || rowMatchesKeyword(row, keyword);
     const matchesType = selectedType === "" || row["Type"] === selectedType;
-    const recommendValue = Number(row["おすすめ度"] || 0);
+    const recommendValue = toNumber(row["おすすめ度"]);
     const matchesRecommend =
       minimumRecommend === 0 || recommendValue >= minimumRecommend;
 
@@ -206,14 +210,23 @@ function normalizeText(value) {
     .trim();
 }
 
+function toNumber(value) {
+  const number = Number(String(value || "").replace(/[^\d.-]/g, ""));
+  return Number.isFinite(number) ? number : 0;
+}
+
+function clampNumber(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
 function sortRows(rows, key, direction, type) {
   rows.sort((a, b) => {
     let valueA = a[key] || "";
     let valueB = b[key] || "";
 
     if (type === "number") {
-      valueA = Number(valueA || 0);
-      valueB = Number(valueB || 0);
+      valueA = toNumber(valueA);
+      valueB = toNumber(valueB);
 
       return direction === "asc" ? valueA - valueB : valueB - valueA;
     }
@@ -233,9 +246,11 @@ function renderTable(rows) {
   if (rows.length === 0) {
     const tr = document.createElement("tr");
     const td = document.createElement("td");
+
     td.colSpan = 7;
     td.className = "empty-cell";
     td.textContent = "該当するデータがありません。";
+
     tr.appendChild(td);
     tableBody.appendChild(tr);
     return;
@@ -247,8 +262,8 @@ function renderTable(rows) {
 
     tr.appendChild(createTitleCell(row["タイトル"]));
     tr.appendChild(createTypeCell(row["Type"]));
-    tr.appendChild(createRatingCell(row["おすすめ度"]));
-    tr.appendChild(createRatingCell(row["難易度"]));
+    tr.appendChild(createRecommendCell(row["おすすめ度"]));
+    tr.appendChild(createDifficultyCell(row["難易度"]));
     tr.appendChild(createClearTimeCell(row["クリア時間"]));
     tr.appendChild(createTextCell(row["ひとこと"]));
     tr.appendChild(createUrlCell(row["URL"]));
@@ -258,15 +273,17 @@ function renderTable(rows) {
 }
 
 function getTypeClass(type) {
-  if (type === "LINE謎") {
+  const normalizedType = String(type || "").trim();
+
+  if (normalizedType === "LINE謎") {
     return "type-line";
   }
 
-  if (type === "Web謎") {
+  if (normalizedType === "Web謎") {
     return "type-web";
   }
 
-  if (type === "Web謎_スマホ") {
+  if (normalizedType === "Web謎_スマホ") {
     return "type-web-mobile";
   }
 
@@ -296,29 +313,68 @@ function createTypeCell(value) {
   const span = document.createElement("span");
   span.className = `type-badge ${getTypeClass(value)}`;
   span.textContent = value;
-  td.appendChild(span);
 
+  td.appendChild(span);
   return td;
 }
 
-function createRatingCell(value) {
+function createRecommendCell(value) {
   const td = document.createElement("td");
-  const span = document.createElement("span");
-  span.className = "rating";
-  span.textContent = value || "";
-  td.appendChild(span);
+  const rating = clampNumber(toNumber(value), 0, 10);
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "star-rating";
+  wrapper.setAttribute("aria-label", `おすすめ度 ${rating}`);
+
+  for (let i = 1; i <= 10; i++) {
+    const star = document.createElement("span");
+    star.className = i <= rating ? "star-on" : "star-off";
+    star.textContent = i <= rating ? "★" : "☆";
+    wrapper.appendChild(star);
+  }
+
+  td.appendChild(wrapper);
+  return td;
+}
+
+function createDifficultyCell(value) {
+  const td = document.createElement("td");
+
+  const difficulty = clampNumber(toNumber(value), 0, 10);
+  const percent = difficulty * 10;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "difficulty-cell";
+
+  const number = document.createElement("span");
+  number.className = "difficulty-number";
+  number.textContent = difficulty || "";
+
+  const bar = document.createElement("div");
+  bar.className = "difficulty-bar";
+
+  const fill = document.createElement("div");
+  fill.className = "difficulty-fill";
+  fill.style.width = `${percent}%`;
+
+  bar.appendChild(fill);
+  wrapper.appendChild(number);
+  wrapper.appendChild(bar);
+  td.appendChild(wrapper);
+
   return td;
 }
 
 function createClearTimeCell(value) {
   const td = document.createElement("td");
+  const minutes = toNumber(value);
 
-  if (!value) {
+  if (!minutes) {
     td.textContent = "";
     return td;
   }
 
-  td.textContent = `${value}分`;
+  td.textContent = `${minutes}分`;
   return td;
 }
 
@@ -349,7 +405,6 @@ function createUrlCell(value) {
   link.textContent = "開く";
 
   td.appendChild(link);
-
   return td;
 }
 
