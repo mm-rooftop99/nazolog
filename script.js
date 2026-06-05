@@ -12,6 +12,7 @@ let currentSort = {
 const searchInput = document.getElementById("searchInput");
 const typeFilter = document.getElementById("typeFilter");
 const preferenceFilter = document.getElementById("preferenceFilter");
+const difficultyFilter = document.getElementById("difficultyFilter");
 const resetButton = document.getElementById("resetButton");
 const tableBody = document.getElementById("tableBody");
 const visibleCount = document.getElementById("visibleCount");
@@ -134,11 +135,13 @@ function setupEvents() {
   searchInput.addEventListener("input", applyFilters);
   typeFilter.addEventListener("change", applyFilters);
   preferenceFilter.addEventListener("change", applyFilters);
+  difficultyFilter.addEventListener("change", applyFilters);
 
   resetButton.addEventListener("click", () => {
     searchInput.value = "";
     typeFilter.value = "";
     preferenceFilter.value = "";
+    difficultyFilter.value = "";
 
     currentSort = {
       key: "",
@@ -174,15 +177,22 @@ function applyFilters() {
   const keyword = normalizeText(searchInput.value);
   const selectedType = typeFilter.value;
   const minimumPreference = toNumber(preferenceFilter.value);
+  const minimumDifficulty = toNumber(difficultyFilter.value);
 
   filteredRows = allRows.filter((row) => {
     const matchesKeyword = keyword === "" || rowMatchesKeyword(row, keyword);
     const matchesType = selectedType === "" || row["Type"] === selectedType;
+
     const preferenceValue = toNumber(row["好み度"]);
+    const difficultyValue = toNumber(row["難易度"]);
+
     const matchesPreference =
       minimumPreference === 0 || preferenceValue >= minimumPreference;
 
-    return matchesKeyword && matchesType && matchesPreference;
+    const matchesDifficulty =
+      minimumDifficulty === 0 || difficultyValue >= minimumDifficulty;
+
+    return matchesKeyword && matchesType && matchesPreference && matchesDifficulty;
   });
 
   if (currentSort.key) {
