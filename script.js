@@ -327,12 +327,15 @@ function createPreferenceCell(value) {
     return td;
   }
 
+  const gradient = getThermoGradient(rating);
+
   const wrapper = document.createElement("div");
   wrapper.className = "preference-cell";
 
   const number = document.createElement("span");
   number.className = "preference-number";
   number.textContent = rating;
+  number.style.color = gradient.textColor;
 
   const stars = document.createElement("div");
   stars.className = "star-rating";
@@ -340,8 +343,16 @@ function createPreferenceCell(value) {
 
   for (let i = 1; i <= 10; i++) {
     const star = document.createElement("span");
-    star.className = i <= rating ? "star-on" : "star-off";
-    star.textContent = i <= rating ? "★" : "☆";
+
+    if (i <= rating) {
+      star.className = "star-on";
+      star.textContent = "★";
+      star.style.color = gradient.textColor;
+    } else {
+      star.className = "star-off";
+      star.textContent = "☆";
+    }
+
     stars.appendChild(star);
   }
 
@@ -362,7 +373,7 @@ function createDifficultyCell(value) {
   }
 
   const percent = difficulty * 10;
-  const gradient = getDifficultyGradient(difficulty);
+  const gradient = getThermoGradient(difficulty);
 
   const wrapper = document.createElement("div");
   wrapper.className = "difficulty-cell";
@@ -388,7 +399,7 @@ function createDifficultyCell(value) {
   return td;
 }
 
-function getDifficultyGradient(difficulty) {
+function getThermoGradient(value) {
   const gradients = {
     1: {
       background: "linear-gradient(90deg, #355cff 0%, #6aa8ff 100%)",
@@ -432,7 +443,7 @@ function getDifficultyGradient(difficulty) {
     },
   };
 
-  return gradients[difficulty] || gradients[1];
+  return gradients[value] || gradients[1];
 }
 
 function createClearTimeCell(value) {

@@ -22,7 +22,6 @@
   --other-bg: #f4f4f4;
   --other-border: #c7c7c7;
 
-  --star-on: #d69b00;
   --star-off: #c9c9c9;
   --difficulty-bg: #e7e7e7;
 }
@@ -264,7 +263,7 @@ th:nth-child(7) {
 }
 
 tbody tr {
-  height: 64px;
+  min-height: 64px;
 }
 
 tbody tr.type-web,
@@ -285,8 +284,8 @@ tbody tr:hover {
 }
 
 td {
-  height: 64px;
-  line-height: 1.45;
+  min-height: 64px;
+  line-height: 1.55;
 }
 
 td:nth-child(5) {
@@ -300,9 +299,9 @@ td:nth-child(5) {
 }
 
 .cell-inner {
-  max-height: 40px;
-  overflow: hidden;
-  line-height: 1.45;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .type-badge {
@@ -342,13 +341,16 @@ td:nth-child(5) {
   align-items: center;
   gap: 7px;
   min-width: 0;
+  padding: 2px 0;
 }
 
 .preference-number {
-  width: 18px;
-  flex: 0 0 18px;
+  width: 20px;
+  flex: 0 0 20px;
   text-align: right;
+  font-size: 15px;
   font-weight: 900;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
@@ -358,12 +360,13 @@ td:nth-child(5) {
   gap: 1px;
   white-space: nowrap;
   font-size: 15px;
-  letter-spacing: -0.03em;
+  line-height: 1;
+  letter-spacing: -0.04em;
   min-width: 0;
 }
 
 .star-on {
-  color: var(--star-on);
+  font-weight: 900;
 }
 
 .star-off {
@@ -374,23 +377,27 @@ td:nth-child(5) {
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 2px 0;
 }
 
 .difficulty-number {
-  width: 18px;
-  flex: 0 0 18px;
+  width: 20px;
+  flex: 0 0 20px;
   text-align: right;
-  font-weight: 800;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
 .difficulty-bar {
   position: relative;
   flex: 1;
-  height: 10px;
+  height: 11px;
   overflow: hidden;
   border-radius: 999px;
   background: var(--difficulty-bg);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
 .difficulty-fill {
@@ -455,16 +462,12 @@ td:nth-child(5) {
     padding: 9px 10px;
   }
 
-  tbody tr,
-  td {
-    height: 60px;
-  }
-
-  .cell-inner {
-    max-height: 38px;
-  }
-
   .star-rating {
+    font-size: 14px;
+  }
+
+  .preference-number,
+  .difficulty-number {
     font-size: 14px;
   }
 }
