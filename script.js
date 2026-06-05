@@ -11,7 +11,7 @@ let currentSort = {
 
 const searchInput = document.getElementById("searchInput");
 const typeFilter = document.getElementById("typeFilter");
-const recommendFilter = document.getElementById("recommendFilter");
+const preferenceFilter = document.getElementById("preferenceFilter");
 const resetButton = document.getElementById("resetButton");
 const tableBody = document.getElementById("tableBody");
 const visibleCount = document.getElementById("visibleCount");
@@ -133,12 +133,12 @@ function setupTypeFilter(rows) {
 function setupEvents() {
   searchInput.addEventListener("input", applyFilters);
   typeFilter.addEventListener("change", applyFilters);
-  recommendFilter.addEventListener("change", applyFilters);
+  preferenceFilter.addEventListener("change", applyFilters);
 
   resetButton.addEventListener("click", () => {
     searchInput.value = "";
     typeFilter.value = "";
-    recommendFilter.value = "";
+    preferenceFilter.value = "";
 
     currentSort = {
       key: "",
@@ -173,16 +173,16 @@ function setupEvents() {
 function applyFilters() {
   const keyword = normalizeText(searchInput.value);
   const selectedType = typeFilter.value;
-  const minimumRecommend = toNumber(recommendFilter.value);
+  const minimumPreference = toNumber(preferenceFilter.value);
 
   filteredRows = allRows.filter((row) => {
     const matchesKeyword = keyword === "" || rowMatchesKeyword(row, keyword);
     const matchesType = selectedType === "" || row["Type"] === selectedType;
-    const recommendValue = toNumber(row["おすすめ度"]);
-    const matchesRecommend =
-      minimumRecommend === 0 || recommendValue >= minimumRecommend;
+    const preferenceValue = toNumber(row["好み度"]);
+    const matchesPreference =
+      minimumPreference === 0 || preferenceValue >= minimumPreference;
 
-    return matchesKeyword && matchesType && matchesRecommend;
+    return matchesKeyword && matchesType && matchesPreference;
   });
 
   if (currentSort.key) {
@@ -262,7 +262,7 @@ function renderTable(rows) {
 
     tr.appendChild(createTitleCell(row["タイトル"]));
     tr.appendChild(createTypeCell(row["Type"]));
-    tr.appendChild(createRecommendCell(row["おすすめ度"]));
+    tr.appendChild(createPreferenceCell(row["好み度"]));
     tr.appendChild(createDifficultyCell(row["難易度"]));
     tr.appendChild(createClearTimeCell(row["クリア時間"]));
     tr.appendChild(createTextCell(row["ひとこと"]));
@@ -318,7 +318,7 @@ function createTypeCell(value) {
   return td;
 }
 
-function createRecommendCell(value) {
+function createPreferenceCell(value) {
   const td = document.createElement("td");
   const rating = clampNumber(toNumber(value), 0, 10);
 
@@ -328,11 +328,15 @@ function createRecommendCell(value) {
   }
 
   const wrapper = document.createElement("div");
-  wrapper.className = "recommend-cell";
+  wrapper.className = "preference-cell";
+
+  const number = document.createElement("span");
+  number.className = "preference-number";
+  number.textContent = rating;
 
   const stars = document.createElement("div");
   stars.className = "star-rating";
-  stars.setAttribute("aria-label", `おすすめ度 ${rating}`);
+  stars.setAttribute("aria-label", `好み度 ${rating}`);
 
   for (let i = 1; i <= 10; i++) {
     const star = document.createElement("span");
@@ -341,12 +345,8 @@ function createRecommendCell(value) {
     stars.appendChild(star);
   }
 
-  const number = document.createElement("span");
-  number.className = "recommend-number";
-  number.textContent = rating;
-
-  wrapper.appendChild(stars);
   wrapper.appendChild(number);
+  wrapper.appendChild(stars);
   td.appendChild(wrapper);
 
   return td;
